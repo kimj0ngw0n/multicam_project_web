@@ -67,27 +67,61 @@ def profile(request, username):
         profile_user = get_object_or_404(User, username=username)
         
         is_my_profile = profile_user.pk == request.user.pk
-        
-        # 팔로우 버튼
-        is_following_star = profile_user.fans.filter(pk=request.user.pk).exists()
-        follow_button_text = '팔로우 취소' if is_following_star else '팔로우'
+
+        # 친구 추가 버튼
+        is_friend_request_to = profile_user.friend_request_from.filter(pk=request.user.pk).exists()
         
         return render(request, 'accounts/profile.html', {
             'profile_user': profile_user,
             'is_my_profile': is_my_profile,
-            'follow_button_text': follow_button_text,
+            'is_friend_request_to': is_friend_request_to,
         })
     else:
         return redirect('accounts:signin')
 
 
+@require_POST
 def request_friend(request, starname):
-    pass
+    star = get_object_or_404(User, username=starname)
+    fan = request.user
+    
+    if star == fan:
+        return HttpResponseBadRequest('Can not friendly yourself')
+    else:
+        if fan.is_authenticated:
+            # 이미 친구라면, 친구 삭제
+            if fan.friends.filter(pk=star.pk).exists():
+                fan.friends.remove(star)
+            # 이미 친구 요청을 보냈으면, 재요청
+            else:
+                if fan.friend_request_to.filter(pk=star.pk).exists():
+                    fan.friend_request_to.remove(star)
+                fan.friend_request_to.add(star)
+
+            return redirect('accounts:profile', star)
+        else:
+            return redirect('accounts:signin')
 
 
+@require_POST
 def accept_friend(request, fanname):
-    pass
+    star = request.user
+    fan = get_object_or_404(User, username=fanname)
+    
+    if star.is_authenticated:
+        star.friend_request_from.remove(fan)
+        star.friends.add(fan)
+    else:
+        return redirect('accounts:signin')
 
 
+@require_POST
 def delete_friend(request, fanname):
-    pass
+    star = request.user
+    fan = get_object_or_404(User, username=fanname)
+    
+    if star.is_authenticated:
+        star.friends.remove(fan)
+        pass
+    else:
+        return redirect('accounts:signin')
