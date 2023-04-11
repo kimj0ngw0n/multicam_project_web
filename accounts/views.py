@@ -61,6 +61,15 @@ def signout(request):
     return redirect('accounts:signin')
 
 
+@login_required
+@require_safe
+def friends(request):
+    user = request.user
+    return render(request, 'accounts/friends.html', {
+        'user': user,
+    })
+
+
 @require_safe
 def profile(request, username):
     if request.user.is_authenticated:
@@ -69,12 +78,16 @@ def profile(request, username):
         is_my_profile = profile_user.pk == request.user.pk
 
         # 친구 추가 버튼
-        is_friend_request_to = profile_user.friend_request_from.filter(pk=request.user.pk).exists()
-        
+        is_friend = profile_user.friends.filter(pk=request.user.pk).exists()
+
+        # 친구 요청 목록
+        request_friends = request.user.friend_request_from.all()
+
         return render(request, 'accounts/profile.html', {
             'profile_user': profile_user,
             'is_my_profile': is_my_profile,
-            'is_friend_request_to': is_friend_request_to,
+            'is_friend': is_friend,
+            'request_friends': request_friends,
         })
     else:
         return redirect('accounts:signin')
@@ -103,25 +116,27 @@ def request_friend(request, starname):
             return redirect('accounts:signin')
 
 
+@login_required
 @require_POST
-def accept_friend(request, fanname):
+def feedback_request(request, fanname):
     star = request.user
     fan = get_object_or_404(User, username=fanname)
     
-    if star.is_authenticated:
-        star.friend_request_from.remove(fan)
+    star.friend_request_from.remove(fan)
+    
+    # 친구 요청 수락
+    if request.POST['name'] == 'acp':
         star.friends.add(fan)
-    else:
-        return redirect('accounts:signin')
+    
+    return redirect('accounts:profile', star.username)
 
 
+@login_required
 @require_POST
 def delete_friend(request, fanname):
     star = request.user
     fan = get_object_or_404(User, username=fanname)
     
-    if star.is_authenticated:
-        star.friends.remove(fan)
-        pass
-    else:
-        return redirect('accounts:signin')
+    star.friends.remove(fan)
+
+    return redirect('accounts:profile', star.username)

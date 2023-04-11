@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ profile_user }}의 프로필</h1>
+
+<div>
+    DISCORD 가입 시기:
+</div>
+<div>
+{{ profile_user.date_joined }}
+</div>
+
+<!-- 내 프로필이면 -->
+<!-- 친구 목록 버튼 출력 -->
+<!-- 친구 요청 목록 출력 -->
+{% if is_my_profile %}
+<a href="{% url 'accounts:friends' %}">
+    <button>친구 목록</button>
+</a>
+<div>
+친구 요청 목록
+</div>
+<div>
+    <ul>
+        {% for request_friend in request_friends %}
+        <li>
+            {{ request_friend }}
+            <form action="{% url 'accounts:feedback_request' request_friend.username %}" method="POST">
+                {% csrf_token %}
+                <button name="accept" value="accept" id="accept">수락</button>
+                <button name="delete" value="delete" id="delete">거부</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- 내 프로필이 아니면 -->
+<!-- 친구 요청/삭제 버튼 출력 -->
+{% else %}
+<form action="{% url 'accounts:request_friend' profile_user.username %}" method="POST">
+    {% csrf_token %}
+    <button>
+        {% if is_friend %}
+        친구 삭제
+        {% else %}
+        친구 요청
+        {% endif %}
+    </button>
+</form>
+{% endif %}
+
+{% endblock content %}

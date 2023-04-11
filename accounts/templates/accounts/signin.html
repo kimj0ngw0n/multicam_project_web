@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Sign In</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div>
+        <button>로그인</button>
+    </div>
+</form>
+<a href="{% url 'accounts:signup' %}">
+    <button>회원가입</button>
+</a>
+{% endblock content %}

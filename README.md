@@ -63,11 +63,13 @@
 
     - signout (로그아웃)
 
-    - request friend (친구요청)
-
-    - accept friend (친구수락)
+    - friends (친구목록)
 
     - profile (프로필)
+
+    - request friend (친구요청)
+
+    - feedback request (요청에 대한 반응)
 
     - delete friend (친구삭제)
 
