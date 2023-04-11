@@ -4,7 +4,9 @@
 
 > 2023.04.11 ~ 2023.04.13
 
-> 간단한 기능이 있는 디스코드를 만들어 본다. 기능이 별로 없으므로 확장성을 생각하면서 기획한다.
+간단한 기능이 있는 디스코드를 만들어 본다.
+
+기능이 별로 없으므로 확장성을 생각하면서 기획한다.
 
 ## 목차
 
@@ -14,7 +16,18 @@
 
 ## 기획
 
-### 모델
+### Model
+    
+#### ACCOUNTS
+
+- `User` [유저]
+    - `name` : `CharField(200)`  [이름]
+    - `friend` : `ForeignKey(), self`  [FK/친구]
+    - `friend_reqs` : `ForeignKey(), self`  [FK/친구요청목록]
+
+- `Access` [권한]
+    - `user` : `ForeignKey()`  [FK/유저]
+    - `type` : `CharField(200)`  [권한 종류]
 
 #### SURVER
 
@@ -38,16 +51,62 @@
     - `updated_at` : `DateTimeField()`  [수정일자]
     - `content` : `TextField()`  [내용]
     - `reaction` : `CharField(200)`  [반응. 좋아요만 구현]
+
+### Views
+
+- Accounts
+
+    - signup (회원가입)
     
-#### ACCOUNTS
+        - 회원가입 하지 않을 시, 접속 안됨.
 
-- `User` [유저]
-    - `name` : `CharField(200)`  [이름]
-    - `star` : `ForeignKey(), self`  [FK/팔로우한 사람]
+    - signin (로그인)
 
-- `Access` [권한]
-    - `user` : `ForeignKey()`  [FK/유저]
-    - `type` : `CharField(200)`  [권한 종류]
+    - signout (로그아웃)
+
+    - request friend (친구요청)
+
+    - accept friend (친구수락)
+
+    - profile (프로필)
+
+    - delete friend (친구삭제)
+
+- Surver
+
+    - create surver
+
+    - create category
+
+    - create channel
+
+    - message detail
+
+        - 블로그 댓글처럼 보이도록 구현
+
+    - update surver
+
+    - update category
+
+    - update channel
+
+    - update message
+
+    - delete surver
+
+        - 관리자만 삭제 가능
+
+    - delete category
+
+    - delete channel
+
+    - delete message
+    
+        - 본인 또는 관리자만 삭제 가능
+
+    - reaction message
+
+        - 반응이 있는 경우만 출력
 
 ## 체크리스트
 
