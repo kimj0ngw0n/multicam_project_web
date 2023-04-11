@@ -21,7 +21,6 @@
 #### ACCOUNTS
 
 - `User` [유저]
-    - `name` : `CharField(20)`  [이름]
     - `friends` : `ForeignKey(), self`  [FK/친구]
     - `friend_reqs` : `ForeignKey(), self`  [FK/친구요청목록]
 
@@ -33,7 +32,7 @@
 
 - `Surver` [서버]
     - `name` : `CharField(20)`  [이름]
-    - `manager` : `ForeignKey()`  [FK/관리자]
+    - `owner` : `ForeignKey()`  [FK/주인]
 
 - `Category` [카테고리]
     - `name` : `CharField(20)`  [이름]
@@ -79,6 +78,8 @@
     - create category
 
     - create channel
+
+    - create message
 
     - message detail
 
