@@ -21,27 +21,27 @@
 #### ACCOUNTS
 
 - `User` [유저]
-    - `name` : `CharField(200)`  [이름]
-    - `friend` : `ForeignKey(), self`  [FK/친구]
+    - `name` : `CharField(20)`  [이름]
+    - `friends` : `ForeignKey(), self`  [FK/친구]
     - `friend_reqs` : `ForeignKey(), self`  [FK/친구요청목록]
 
 - `Access` [권한]
     - `user` : `ForeignKey()`  [FK/유저]
-    - `type` : `CharField(200)`  [권한 종류]
+    - `type` : `CharField(20)`  [권한 종류]
 
 #### SURVER
 
 - `Surver` [서버]
-    - `name` : `CharField(200)`  [이름]
+    - `name` : `CharField(20)`  [이름]
     - `manager` : `ForeignKey()`  [FK/관리자]
 
 - `Category` [카테고리]
-    - `name` : `CharField(200)`  [이름]
+    - `name` : `CharField(20)`  [이름]
     - `surver` : `ForeignKey()`  [FK/소속 서버]
 
 - `Channel` [채널]
-    - `name` : `CharField(200)`  [이름]
-    - `type` : `CharField(200)`  [채널 종류]
+    - `name` : `CharField(20)`  [이름]
+    - `type` : `CharField(20)`  [채널 종류]
     - `category` : `ForeignKey()`  [FK/소속 카테고리]
 
 - `Message` [메시지]
@@ -50,7 +50,7 @@
     - `created_at` : `DateTimeField()`  [작성일자]
     - `updated_at` : `DateTimeField()`  [수정일자]
     - `content` : `TextField()`  [내용]
-    - `reaction` : `CharField(200)`  [반응. 좋아요만 구현]
+    - `reaction` : `CharField(20)`  [반응. 좋아요만 구현]
 
 ### Views
 
