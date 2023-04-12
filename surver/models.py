@@ -4,6 +4,7 @@ from django.conf import settings
 
 class Surver(models.Model):
     name = models.CharField(max_length=20)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='survers')
 
 
 class Access(models.Model):
@@ -25,8 +26,8 @@ class Channel(models.Model):
 
 
 class Message(models.Model):
-    channel = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name='messages')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_messages')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     content = models.TextField()

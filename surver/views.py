@@ -33,6 +33,7 @@ def create_surver(request):
 
     return render(request, 'surver/form.html', {
         'form': form,
+        'type_message': '서버 추가',
     })
 
 
@@ -53,6 +54,7 @@ def create_category(request, surver_pk):
 
     return render(request, 'surver/form.html', {
         'form': form,
+        'type_message': '카테고리 추가',
     })
 
 
@@ -74,6 +76,7 @@ def create_channel(request, category_pk):
 
     return render(request, 'surver/form.html', {
         'form': form,
+        'type_message': '채널 추가',
     })
 
 
@@ -97,8 +100,50 @@ def create_message(request, channel_pk):
 # Read
 @login_required
 def detail(request, surver_pk, channel_pk):
-    
-    pass
+    user = request.user
+    survers = user.survers.all()
+
+    # 사용자가 특정 서버에 들어가있고, 채널이 있는 경우
+    if survers and surver_pk and channel_pk:
+        state1 = 1
+        state2 = 1
+        
+        this_surver = get_object_or_404(Surver, pk=surver_pk)
+        this_channel = get_object_or_404(Channel, pk=channel_pk)
+
+        form = MessageForm()
+        messages = this_channel.messages.all()
+        
+        return render(request, 'surver/detail.html', {
+            'survers': survers,
+            'state1': state1,
+            'state2': state2,
+            'this_surver': this_surver,
+            'this_channel': this_channel,
+            'form': form,
+            'messages': messages,
+        })
+    # 사용자가 특정 서버에 들어가있고, 채널이 없는 경우
+    elif not channel_pk:
+        print('여기1')
+        state1 = 1
+        state2 = 0
+        this_surver = get_object_or_404(Surver, pk=surver_pk)
+        return render(request, 'surver/detail.html', {
+            'survers': survers,
+            'state1': state1,
+            'state2': state2,
+            'this_surver': this_surver,
+        })
+    # 사용자가 아무 서버에도 들어가 있지 않을 경우
+    else:
+        print('여기2')
+        state1 = 0
+        state2 = 1
+        return render(request, 'surver/detail.html', {
+            'state1': state1,
+            'state2': state2,
+        })
 
 
 # Update

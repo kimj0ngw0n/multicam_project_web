@@ -1,0 +1,21 @@
+<ul>
+    {% for surver in survers %}
+    <a href="{% url 'surver:detail' surver.pk 0 %}">
+        <li>{{ surver.name }}</li>
+    </a>
+    <ul>
+        {% for category in this_surver.categories.all %}
+        <a href="{% url 'surver:detail' this_surver.pk 0 %}">
+            <li>{{ category.name }}</li>
+        </a>
+        <ul>
+            {% for channel in category.channels.all %}
+            <a href="{% url 'surver:detail' this_surver.pk channel.pk %}">
+                <li>{{ channel.name }}</li>
+            </a>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+</ul>
