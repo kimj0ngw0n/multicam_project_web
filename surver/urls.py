@@ -23,4 +23,6 @@ urlpatterns = [
     path('<int:message_pk>/delete/message/', views.delete_message, name='delete_message'),
     
     path('<int:message_pk>/reaction/', views.reaction, name='reaction'),
+
+    path('<str:member_name>/add_member/<int:surver_pk>/', views.add_member, name='add_member'),
 ]

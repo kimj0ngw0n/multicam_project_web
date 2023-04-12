@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST, require_safe, require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-
+from django.http import HttpResponseBadRequest
 from django.db.models import Count
 from django.core.paginator import Paginator
 
@@ -105,45 +105,36 @@ def detail(request, surver_pk, channel_pk):
 
     # 사용자가 특정 서버에 들어가있고, 채널이 있는 경우
     if survers and surver_pk and channel_pk:
-        state1 = 1
-        state2 = 1
+        state = True
         
         this_surver = get_object_or_404(Surver, pk=surver_pk)
         this_channel = get_object_or_404(Channel, pk=channel_pk)
+    # 사용자가 특정 서버에 들어가있고, 채널이 없는 경우
+    elif survers and surver_pk:
+        state = False
 
-        form = MessageForm()
+        this_surver = get_object_or_404(Surver, pk=surver_pk)
+        this_channel = False
+    # # 사용자가 아무 서버에도 들어가 있지 않을 경우
+    # else:
+    #     state1 = 0
+    #     state2 = 1
+
+    #     this_surver = 0
+    #     this_channel = 0
+
+    form = MessageForm()
+    if this_channel:
         messages = this_channel.messages.all()
         
-        return render(request, 'surver/detail.html', {
-            'survers': survers,
-            'state1': state1,
-            'state2': state2,
-            'this_surver': this_surver,
-            'this_channel': this_channel,
-            'form': form,
-            'messages': messages,
-        })
-    # 사용자가 특정 서버에 들어가있고, 채널이 없는 경우
-    elif not channel_pk:
-        print('여기1')
-        state1 = 1
-        state2 = 0
-        this_surver = get_object_or_404(Surver, pk=surver_pk)
-        return render(request, 'surver/detail.html', {
-            'survers': survers,
-            'state1': state1,
-            'state2': state2,
-            'this_surver': this_surver,
-        })
-    # 사용자가 아무 서버에도 들어가 있지 않을 경우
-    else:
-        print('여기2')
-        state1 = 0
-        state2 = 1
-        return render(request, 'surver/detail.html', {
-            'state1': state1,
-            'state2': state2,
-        })
+    return render(request, 'surver/detail.html', {
+        'survers': survers,
+        'state': state,
+        'this_surver': this_surver,
+        'this_channel': this_channel,
+        'form': form,
+        'messages': messages,
+    })
 
 
 # Update
@@ -179,6 +170,24 @@ def delete_channel(request, channel_pk):
 def delete_message(request, message_pk):
     pass
     
-    
+
+# etc    
 def reaction(request, message_pk):
     pass
+
+
+@login_required
+@require_POST
+def add_member(request, member_name, surver_pk):
+    inviter = request.user
+    invitee = get_object_or_404(User, username=member_name)
+    surver = get_object_or_404(Surver, pk=surver_pk)
+    owner = surver.surver_access.filter(type='owner')
+    
+    if inviter == owner:
+        access = Access(surver=surver, user=invitee, type='')
+        access.save()
+
+        return redirect('surver:detail', surver.pk, 0)
+    else:
+        return HttpResponseBadRequest('You are not owner in this surver.')

@@ -1,3 +1,7 @@
 <nav>
     <a href="{% url 'accounts:profile' request.user %}">{{ request.user }}</a>
+    
+    {% include '__survers.html' %}
+
+    <!-- 서버 추가 버튼 -->
 </nav>

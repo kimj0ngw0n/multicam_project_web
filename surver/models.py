@@ -4,13 +4,13 @@ from django.conf import settings
 
 class Surver(models.Model):
     name = models.CharField(max_length=20)
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='survers')
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Access')
 
 
 class Access(models.Model):
-    surver = models.ForeignKey(Surver, on_delete=models.CASCADE, related_name='surver_access')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_access')
-    type = models.CharField(max_length=20)
+    surver = models.ForeignKey(Surver, on_delete=models.CASCADE, related_name='survers')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='users')
+    type = models.CharField(max_length=20, default='')
 
 
 class Category(models.Model):
