@@ -1,5 +1,5 @@
 from django import forms
-from .models import Surver, Category, Channel, Message
+from .models import Surver, Category, Channel, Message, Access
 
 
 class SurverForm(forms.ModelForm):
@@ -9,18 +9,25 @@ class SurverForm(forms.ModelForm):
         fields = '__all__'
 
 
+class AccessForm(forms.ModelForm):
+    
+    class Meta:
+        model = Access
+        exclude = ('surver', )
+
+
 class CategoryForm(forms.ModelForm):
 
     class Meta:
         model = Category
-        fields = '__all__'
+        exclude = ('surver', )
         
 
 class ChannelForm(forms.ModelForm):
 
     class Meta:
         model = Channel
-        fields = '__all__'
+        exclude = ('category', )
 
 
 class MessageForm(forms.ModelForm):

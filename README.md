@@ -24,18 +24,19 @@
     - `friends` : `ForeignKey(), self`  [FK/친구]
     - `friend_reqs` : `ForeignKey(), self`  [FK/친구요청목록]
 
-- `Access` [권한]
-    - `user` : `ForeignKey()`  [FK/유저]
-    - `type` : `CharField(20)`  [권한 종류]
-
 #### SURVER
 
 - `Surver` [서버]
     - `name` : `CharField(20)`  [이름]
-    - `owner` : `ForeignKey()`  [FK/주인]
+
+- `Access` [권한]
+    - `surver` : `ForeignKey()`  [FK/서버]
+    - `user` : `ForeignKey()`  [FK/유저]
+    - `type` : `CharField(20)`  [권한 종류]
 
 - `Category` [카테고리]
     - `name` : `CharField(20)`  [이름]
+    - `type` : `CharField(20)`  [공개 여부]
     - `surver` : `ForeignKey()`  [FK/소속 서버]
 
 - `Channel` [채널]

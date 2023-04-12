@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ profile_user.username }}의 친구들</h1>
+
+<ul>
+    {% for friend in friends %}
+    <li>
+        <a href="{% url 'accounts:profile' friend.username %}">
+            {{ friend }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock content %}

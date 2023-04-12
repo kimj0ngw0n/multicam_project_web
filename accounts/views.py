@@ -64,9 +64,12 @@ def signout(request):
 @login_required
 @require_safe
 def friends(request):
-    user = request.user
+    profile_user = request.user
+    friends = profile_user.friends.all()
+    
     return render(request, 'accounts/friends.html', {
-        'user': user,
+        'profile_user': profile_user,
+        'friends': friends,
     })
 
 
@@ -125,7 +128,7 @@ def feedback_request(request, fanname):
     star.friend_request_from.remove(fan)
     
     # 친구 요청 수락
-    if request.POST['name'] == 'acp':
+    if request.POST.get('accept'):
         star.friends.add(fan)
     
     return redirect('accounts:profile', star.username)

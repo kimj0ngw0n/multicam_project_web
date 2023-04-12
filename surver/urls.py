@@ -6,11 +6,11 @@ app_name = 'surver'
 
 urlpatterns = [
     path('create_surver/', views.create_surver, name='create_surver'),
-    path('create_category/', views.create_category, name='create_category'),
-    path('create_channel/', views.create_channel, name='create_channel'),
-    path('create_message/', views.create_message, name='create_message'),
+    path('create_category/<int:surver_pk>/', views.create_category, name='create_category'),
+    path('create_channel/<int:category_pk>/', views.create_channel, name='create_channel'),
+    path('create_message/<int:channel_pk>/', views.create_message, name='create_message'),
     
-    path('<int:channel_pk>/', views.detail, name='detail'),
+    path('<int:surver_pk>/<int:channel_pk>/', views.detail, name='detail'),
     
     path('<int:surver_pk>/update/surver/', views.update_surver, name='update_surver'),
     path('<int:category_pk>/update/category/', views.update_category, name='update_category'),

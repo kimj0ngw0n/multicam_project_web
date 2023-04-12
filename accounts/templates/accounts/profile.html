@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ profile_user }}의 프로필</h1>
+<h2>{{ profile_user }}의 프로필</h2>
 
 <div>
     DISCORD 가입 시기:
@@ -14,12 +14,20 @@
 <!-- 친구 목록 버튼 출력 -->
 <!-- 친구 요청 목록 출력 -->
 {% if is_my_profile %}
-<a href="{% url 'accounts:friends' %}">
-    <button>친구 목록</button>
-</a>
 <div>
-친구 요청 목록
+    <a href="{% url 'accounts:friends' %}">
+        <button>친구 목록</button>
+    </a>
+    
 </div>
+<div>
+    <a href="{% url 'accounts:signout' %}">
+        <button>로그아웃</button>
+    </a>
+</div>
+
+<div>친구 요청 목록</div>
+
 <div>
     <ul>
         {% for request_friend in request_friends %}
@@ -27,8 +35,8 @@
             {{ request_friend }}
             <form action="{% url 'accounts:feedback_request' request_friend.username %}" method="POST">
                 {% csrf_token %}
-                <button name="accept" value="accept" id="accept">수락</button>
-                <button name="delete" value="delete" id="delete">거부</button>
+                <button type="submit" name="accept" value="accept">수락</button>
+                <button type="submit" name="reject" value="reject">거부</button>
             </form>
         </li>
         {% endfor %}

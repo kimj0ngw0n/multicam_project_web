@@ -4,10 +4,5 @@ from django.conf import settings
 
 
 class User(AbstractUser):
-    friends = models.ManyToManyField('self')
+    friends = models.ManyToManyField('self', related_name='friends_from')
     friend_request_to = models.ManyToManyField('self', symmetrical=False, related_name='friend_request_from')
-
-
-class Access(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_access')
-    type = models.CharField(max_length=20)

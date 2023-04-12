@@ -1,25 +1,103 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST, require_safe, require_http_methods
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+
+from django.db.models import Count
+from django.core.paginator import Paginator
+
+from .models import Surver, Access, Category, Channel, Message
+from .forms import SurverForm, AccessForm, CategoryForm, ChannelForm, MessageForm
+
+
+User = get_user_model()
 
 
 # Create
+@login_required
+@require_http_methods(['GET', 'POST'])
 def create_surver(request):
-    pass
+    if request.method == "POST":
+        form = SurverForm(request.POST)
+        if form.is_valid():
+            surver = form.save()
+            
+            # 서버 주인 설정
+            owner = request.user
+            access = Access(surver=surver, user=owner, type='owner')
+            access.save()
+
+            return redirect('surver:detail', surver.pk, 0)
+    else:
+        form = SurverForm()
+
+    return render(request, 'surver/form.html', {
+        'form': form,
+    })
 
 
-def create_category(request):
-    pass
+@login_required
+@require_http_methods(['GET', 'POST'])
+def create_category(request, surver_pk):
+    surver = get_object_or_404(Surver, pk=surver_pk)
+
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.surver = surver
+            category.save()
+            return redirect('surver:detail', surver.pk, 0)
+    else:
+        form = CategoryForm()
+
+    return render(request, 'surver/form.html', {
+        'form': form,
+    })
 
 
-def create_channel(request):
-    pass
+@login_required
+@require_http_methods(['GET', 'POST'])
+def create_channel(request, category_pk):
+    category = get_object_or_404(Category, pk=category_pk)
+    surver = category.surver
+
+    if request.method == "POST":
+        form = ChannelForm(request.POST)
+        if form.is_valid():
+            channel = form.save(commit=False)
+            channel.category = category
+            channel.save()
+            return redirect('surver:detail', surver.pk, channel.pk)
+    else:
+        form = ChannelForm()
+
+    return render(request, 'surver/form.html', {
+        'form': form,
+    })
 
 
-def create_message(request):
-    pass
+@login_required
+@require_POST
+def create_message(request, channel_pk):
+    channel = get_object_or_404(Channel, pk=channel_pk)
+    category = channel.category
+    surver = category.surver
+
+    form = MessageForm(request.POST)
+
+    if form.is_valid():
+        message = form.save(commit=False)
+        message.user = request.user
+        message.category = channel
+        message.save()
+        return redirect('surver:detail', surver.pk, channel.pk)
 
 
 # Read
-def detail(request, channel_pk):
+@login_required
+def detail(request, surver_pk, channel_pk):
+    
     pass
 
 
