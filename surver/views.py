@@ -171,7 +171,7 @@ def delete_surver(request, surver_pk):
     else:
         return HttpResponseBadRequest('You are not owner in this surver.')
 
-    
+
 def delete_category(request, category_pk):
     pass
 
@@ -183,7 +183,6 @@ def delete_channel(request, channel_pk):
 @login_required
 @require_POST
 def delete_message(request, message_pk):
-    print('@')
     me = request.user
     message = get_object_or_404(Message, pk=message_pk)
     message_user = message.user
