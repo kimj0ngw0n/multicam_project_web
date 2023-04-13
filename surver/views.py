@@ -117,9 +117,16 @@ def detail(request, surver_pk, channel_pk):
 
     form = MessageForm()
     
+    # 채널이 있을 경우, 메시지 출력 및 입력 가능
     messages = False
     if this_channel:
         messages = this_channel.messages.all()
+
+    # 서버 주인이 아닐 경우, 초대 버튼 안 보이도록
+    is_owner = bool(this_surver.surver_access.filter(user=user, type='owner'))
+
+    # 서버 멤버
+    member_accesses = this_surver.surver_access.all()
         
     return render(request, 'surver/detail.html', {
         'survers': survers,
@@ -127,6 +134,8 @@ def detail(request, surver_pk, channel_pk):
         'this_channel': this_channel,
         'form': form,
         'messages': messages,
+        'is_owner': is_owner,
+        'member_accesses': member_accesses,
     })
 
 
@@ -148,8 +157,19 @@ def update_message(request, message_pk):
 
 
 # Delete
+@login_required
+@require_POST
 def delete_surver(request, surver_pk):
-    pass
+    me = request.user
+    surver = get_object_or_404(Surver, pk=surver_pk)
+
+    is_owner = surver.surver_access.filter(user=me, type='owner')
+
+    if is_owner:
+        surver.delete()
+        return redirect('accounts:profile', me.username)
+    else:
+        return HttpResponseBadRequest('You are not owner in this surver.')
 
     
 def delete_category(request, category_pk):
@@ -160,8 +180,23 @@ def delete_channel(request, channel_pk):
     pass
 
 
+@login_required
+@require_POST
 def delete_message(request, message_pk):
-    pass
+    print('@')
+    me = request.user
+    message = get_object_or_404(Message, pk=message_pk)
+    message_user = message.user
+    channel = message.channel
+    surver = channel.category.surver
+
+    is_owner = surver.surver_access.filter(user=me, type='owner')
+
+    if message_user == me or is_owner:
+        message.delete()
+        return redirect('surver:detail', surver.pk, channel.pk)
+    else:
+        return HttpResponseBadRequest('You are not writer or owner for this message.')
     
 
 # etc    
@@ -174,9 +209,9 @@ def reaction(request, message_pk):
 def add_member(request, surver_pk):
     inviter = request.user
     surver = get_object_or_404(Surver, pk=surver_pk)
-    owner = surver.surver_access.filter(user=inviter, type='owner')
+    is_owner = surver.surver_access.filter(user=inviter, type='owner')
 
-    if owner:
+    if is_owner:
         if request.method=='POST':
             form = AccessForm(request.POST)
             if form.is_valid():

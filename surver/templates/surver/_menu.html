@@ -6,9 +6,11 @@
 <div>
     {{ this_surver.name }}
     <div>
+        {% if is_owner %}
         <a href="{% url 'surver:add_member' this_surver.pk %}">
             <button>서버 (강제)초대</button>
         </a>
+        {% endif %}
     </div>
 </div>
 

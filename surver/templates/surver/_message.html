@@ -3,7 +3,26 @@
 <div>
 <ul>
     {% for message in messages %}
-    <li>{{ message.content }}</li>
+    <li>
+        {{ message.content }}
+
+            <!-- 메시지 작성자 또는 서버 주인일 경우 편집 및 삭제 버튼 출력 -->
+            <!-- 메시지 작성자일 경우 -->
+        {% if request.user == message.user %}
+        <!-- 편집 버튼 삽입란 -->
+        <form action="{% url 'surver:delete_message' message.pk %}" method="POST">
+            {% csrf_token %}
+            <button>삭제</button>
+        </form>
+            <!-- 서버 주인일 경우 -->
+        {% elif is_owner %}
+        <!-- /편집 버튼 삽입란 -->
+        <form action="{% url 'surver:delete_message' message.pk %}" method="POST">
+            {% csrf_token %}
+            <button>삭제</button>
+        </form>
+        {% endif %}
+    </li>
     {% endfor %}
 </ul>
 </div>

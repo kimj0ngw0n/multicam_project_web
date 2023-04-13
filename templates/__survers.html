@@ -1,5 +1,12 @@
 {% for surver in request.user.survers.all %}
-<a href="{% url 'surver:detail' surver.pk 0 %}" surver.pk 0 >
-    <button>{{ surver.name }}</button>
-</a>
+<div>
+    <a href="{% url 'surver:detail' surver.pk 0 %}" surver.pk 0 >
+        <button>{{ surver.name }}</button>
+    </a>
+
+    <form action="{% url 'surver:delete_surver' surver.pk %}" method="POST">
+        {% csrf_token %}
+        <button>{{ surver.name }} 삭제</button>
+    </form>
+</div>
 {% endfor %}
