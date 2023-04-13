@@ -8,6 +8,8 @@
 
 기능이 별로 없으므로 확장성을 생각하면서 기획한다.
 
+코드에서 server를 surver로 작성했다.
+
 ## 목차
 
 1. [기획](###-기획)
@@ -24,20 +26,20 @@
     - `friends` : `ForeignKey(), self`  [FK/친구]
     - `friend_reqs` : `ForeignKey(), self`  [FK/친구요청목록]
 
-#### SURVER
+#### SERVER
 
-- `Surver` [서버]
+- `Server` [서버]
     - `name` : `CharField(20)`  [이름]
 
 - `Access` [권한]
-    - `surver` : `ForeignKey()`  [FK/서버]
+    - `server` : `ForeignKey()`  [FK/서버]
     - `user` : `ForeignKey()`  [FK/유저]
     - `type` : `CharField(20)`  [권한 종류]
 
 - `Category` [카테고리]
     - `name` : `CharField(20)`  [이름]
     - `type` : `CharField(20)`  [공개 여부]
-    - `surver` : `ForeignKey()`  [FK/소속 서버]
+    - `server` : `ForeignKey()`  [FK/소속 서버]
 
 - `Channel` [채널]
     - `name` : `CharField(20)`  [이름]
@@ -50,7 +52,10 @@
     - `created_at` : `DateTimeField()`  [작성일자]
     - `updated_at` : `DateTimeField()`  [수정일자]
     - `content` : `TextField()`  [내용]
-    - `reaction` : `CharField(20)`  [반응. 좋아요만 구현]
+
+- `Reaction` [메시지에 대한 반응]
+    - `message` : `ForeignKey()`  [FK/메시지]
+    - `reaction` : `CharField(20)`  [반응]
 
 ### Views
 
@@ -74,9 +79,9 @@
 
     - delete friend (친구삭제)
 
-- Surver
+- Server
 
-    - create surver
+    - create server
 
     - create category
 
@@ -88,7 +93,7 @@
 
         - 블로그 댓글처럼 보이도록 구현
 
-    - update surver
+    - update server
 
     - update category
 
@@ -96,7 +101,7 @@
 
     - update message
 
-    - delete surver
+    - delete server
 
         - 관리자만 삭제 가능
 

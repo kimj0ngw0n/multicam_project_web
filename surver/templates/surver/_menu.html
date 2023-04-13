@@ -1,8 +1,18 @@
-<ul>
-    {% for surver in survers %}
-    <a href="{% url 'surver:detail' surver.pk 0 %}">
-        <li>{{ surver.name }}</li>
-    </a>
+<nav>
+
+<!-- 사용자가 특정 서버에 들어가있고, 채널이 있는 경우 -->
+{% if survers %}
+
+<div>
+    {{ this_surver.name }}
+    <div>
+        <a href="{% url 'surver:add_member' this_surver.pk %}">
+            <button>서버 (강제)초대</button>
+        </a>
+    </div>
+</div>
+
+<div>
     <ul>
         {% for category in this_surver.categories.all %}
         <a href="{% url 'surver:detail' this_surver.pk 0 %}">
@@ -17,5 +27,22 @@
         </ul>
         {% endfor %}
     </ul>
-    {% endfor %}
-</ul>
+</div>
+
+{% endif %}
+
+<div>
+    <div>
+        <a href="{% url 'surver:create_category' this_surver.pk %}">
+            <button>카테고리 추가</button>
+        </a>
+    </div>
+    
+    <div>
+        <a href="{% url 'surver:create_channel' this_surver.pk %}">
+            <button>채널 추가</button>
+        </a>
+    </div>
+</div>
+
+</nav>

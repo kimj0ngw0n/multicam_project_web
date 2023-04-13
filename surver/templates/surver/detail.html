@@ -2,31 +2,7 @@
 
 {% block content %}
 
-{% if state %}
-<!-- 사용자가 특정 서버에 들어가있고, 채널이 있는 경우 -->
-
-<!-- 메뉴 출력 -->
-{% include '_menu.html' %}
-
-<!-- 메시지 출력 -->
-<ul>
-    {% for message in messages %}
-    <li>{{ message.content }}</li>
-    {% endfor %}
-</ul>
-
-<!-- 메시지 입력 -->
-<div>
-    <form action="{% url 'surver:create_message' this_channel.pk %}" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button>완료</button>
-    </form>
-</div>
-
-{% else %}
-<!-- 사용자가 특정 서버에 들어가있고, 채널이 없는 경우 -->
-
-{% endif %}
+{% include 'surver/_menu.html' %}
+{% include 'surver/_message.html' %}
 
 {% endblock content %}

@@ -60,17 +60,13 @@ def create_category(request, surver_pk):
 
 @login_required
 @require_http_methods(['GET', 'POST'])
-def create_channel(request, category_pk):
-    category = get_object_or_404(Category, pk=category_pk)
-    surver = category.surver
-
+def create_channel(request, surver_pk):
     if request.method == "POST":
         form = ChannelForm(request.POST)
         if form.is_valid():
             channel = form.save(commit=False)
-            channel.category = category
             channel.save()
-            return redirect('surver:detail', surver.pk, channel.pk)
+            return redirect('surver:detail', surver_pk, channel.pk)
     else:
         form = ChannelForm()
 
@@ -91,29 +87,25 @@ def create_message(request, channel_pk):
 
     if form.is_valid():
         message = form.save(commit=False)
+        message.channel = channel
         message.user = request.user
-        message.category = channel
         message.save()
         return redirect('surver:detail', surver.pk, channel.pk)
 
 
 # Read
 @login_required
+@require_safe
 def detail(request, surver_pk, channel_pk):
     user = request.user
     survers = user.survers.all()
 
+    this_surver = get_object_or_404(Surver, pk=surver_pk)
     # 사용자가 특정 서버에 들어가있고, 채널이 있는 경우
-    if survers and surver_pk and channel_pk:
-        state = True
-        
-        this_surver = get_object_or_404(Surver, pk=surver_pk)
+    if survers and channel_pk:
         this_channel = get_object_or_404(Channel, pk=channel_pk)
     # 사용자가 특정 서버에 들어가있고, 채널이 없는 경우
-    elif survers and surver_pk:
-        state = False
-
-        this_surver = get_object_or_404(Surver, pk=surver_pk)
+    else:
         this_channel = False
     # # 사용자가 아무 서버에도 들어가 있지 않을 경우
     # else:
@@ -124,12 +116,13 @@ def detail(request, surver_pk, channel_pk):
     #     this_channel = 0
 
     form = MessageForm()
+    
+    messages = False
     if this_channel:
         messages = this_channel.messages.all()
         
     return render(request, 'surver/detail.html', {
         'survers': survers,
-        'state': state,
         'this_surver': this_surver,
         'this_channel': this_channel,
         'form': form,
@@ -177,17 +170,28 @@ def reaction(request, message_pk):
 
 
 @login_required
-@require_POST
-def add_member(request, member_name, surver_pk):
+@require_http_methods(['GET', 'POST'])
+def add_member(request, surver_pk):
     inviter = request.user
-    invitee = get_object_or_404(User, username=member_name)
     surver = get_object_or_404(Surver, pk=surver_pk)
-    owner = surver.surver_access.filter(type='owner')
-    
-    if inviter == owner:
-        access = Access(surver=surver, user=invitee, type='')
-        access.save()
+    owner = surver.surver_access.filter(user=inviter, type='owner')
 
-        return redirect('surver:detail', surver.pk, 0)
+    if owner:
+        if request.method=='POST':
+            form = AccessForm(request.POST)
+            if form.is_valid():
+                access = form.save(commit=False)
+                # 서버의 멤버가 아니라면 초대
+                if not Access.objects.filter(surver=surver, user=access.user):
+                    access.surver = surver
+                    access.type = ''
+                    access.save()
+                return redirect('surver:detail', surver.pk, 0)
+        else:
+            form = AccessForm()
+
+        return render(request, 'surver/form.html', {
+            'form': form,
+        })
     else:
         return HttpResponseBadRequest('You are not owner in this surver.')

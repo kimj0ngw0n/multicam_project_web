@@ -1,0 +1,19 @@
+<!-- 메시지 출력 -->
+{% if this_channel %}
+<div>
+<ul>
+    {% for message in messages %}
+    <li>{{ message.content }}</li>
+    {% endfor %}
+</ul>
+</div>
+
+<!-- 메시지 입력 -->
+<div>
+    <form action="{% url 'surver:create_message' this_channel.pk %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button>완료</button>
+    </form>
+</div>
+{% endif %}

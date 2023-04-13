@@ -1,7 +1,16 @@
 <nav>
-    <a href="{% url 'accounts:profile' request.user %}">{{ request.user }}</a>
+    <div>
+        <a href="{% url 'accounts:profile' request.user %}">{{ request.user }}</a>
+    </div>
     
-    {% include '__survers.html' %}
-
+    <div>
+        {% include '__survers.html' %}
+    </div>
+    
     <!-- 서버 추가 버튼 -->
+    <div>
+        <a href="{% url 'surver:create_surver' %}">
+            <button>서버추가</button>
+        </a>
+    </div>
 </nav>

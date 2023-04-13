@@ -11,7 +11,7 @@
         </button>
     </div>
 </form>
-<a href="{% url 'surver:detail' 0 0 %}">
+<a href="{% url 'accounts:profile' request.user %}">
     취소
 </a>
 {% endblock content %}

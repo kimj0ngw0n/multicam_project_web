@@ -1,3 +1,5 @@
 {% for surver in request.user.survers.all %}
-
+<a href="{% url 'surver:detail' surver.pk 0 %}" surver.pk 0 >
+    <button>{{ surver.name }}</button>
+</a>
 {% endfor %}

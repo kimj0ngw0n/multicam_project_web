@@ -4,12 +4,12 @@ from django.conf import settings
 
 class Surver(models.Model):
     name = models.CharField(max_length=20)
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Access')
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Access', related_name='survers')
 
 
 class Access(models.Model):
-    surver = models.ForeignKey(Surver, on_delete=models.CASCADE, related_name='survers')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='users')
+    surver = models.ForeignKey(Surver, on_delete=models.CASCADE, related_name='surver_access')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_access')
     type = models.CharField(max_length=20, default='')
 
 
@@ -31,4 +31,8 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     content = models.TextField()
-    reaction = models.CharField(max_length=20)
+
+
+class Reaction(models.Model):
+    reaction = models.CharField(max_length=20, default='good')
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='reactions')

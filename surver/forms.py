@@ -1,19 +1,19 @@
 from django import forms
-from .models import Surver, Category, Channel, Message, Access
+from .models import Surver, Category, Channel, Message, Access, Reaction
 
 
 class SurverForm(forms.ModelForm):
 
     class Meta:
         model = Surver
-        fields = '__all__'
+        fields = ('name', )
 
 
 class AccessForm(forms.ModelForm):
     
     class Meta:
         model = Access
-        exclude = ('surver', )
+        fields = ('user', )
 
 
 class CategoryForm(forms.ModelForm):
@@ -27,7 +27,7 @@ class ChannelForm(forms.ModelForm):
 
     class Meta:
         model = Channel
-        exclude = ('category', )
+        fields = '__all__'
 
 
 class MessageForm(forms.ModelForm):
@@ -35,3 +35,10 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ('content', )
+
+
+class ReactionForm(forms.ModelForm):
+
+    class Meta:
+        model = Reaction
+        fields = ('message', )

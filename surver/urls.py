@@ -7,7 +7,7 @@ app_name = 'surver'
 urlpatterns = [
     path('create_surver/', views.create_surver, name='create_surver'),
     path('create_category/<int:surver_pk>/', views.create_category, name='create_category'),
-    path('create_channel/<int:category_pk>/', views.create_channel, name='create_channel'),
+    path('create_channel/<int:surver_pk>/', views.create_channel, name='create_channel'),
     path('create_message/<int:channel_pk>/', views.create_message, name='create_message'),
     
     path('<int:surver_pk>/<int:channel_pk>/', views.detail, name='detail'),
@@ -24,5 +24,5 @@ urlpatterns = [
     
     path('<int:message_pk>/reaction/', views.reaction, name='reaction'),
 
-    path('<str:member_name>/add_member/<int:surver_pk>/', views.add_member, name='add_member'),
+    path('<int:surver_pk>/add_member/', views.add_member, name='add_member'),
 ]
